@@ -5,7 +5,7 @@ const networkConfig = require('../config/general/networkConfig');
 const seedPhrase = require('../config/general/seedPhraseConfig');
 
 /**
- * Is used to encode text parameters
+ * Isis  used to encode text parameters
  * @param {String} str 
  */
 function toHex(str) {

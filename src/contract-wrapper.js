@@ -304,20 +304,27 @@ class ContractWrapper {
                 message: message.message,
                 send_events: false,
             });
-
-        return this
-            .tonWrapper
-            .ton
-            .processing
-            .wait_for_transaction({
-                message: message.message,
-                shard_block_id,
-                send_events: false,
-                abi: {
-                    type: 'Contract',
-                    value: this.abi
-                },
-            });
+        let status = undefined;
+        while (!status)
+            try {
+                status = this
+                    .tonWrapper
+                    .ton
+                    .processing
+                    .wait_for_transaction({
+                        message: message.message,
+                        shard_block_id,
+                        send_events: false,
+                        abi: {
+                            type: 'Contract',
+                            value: this.abi
+                        },
+                    });
+                await utils.sleep(2000);
+            } catch {
+                status = undefined;
+            }
+        return status;
     }
 
     /**

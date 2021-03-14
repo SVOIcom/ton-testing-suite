@@ -50,7 +50,7 @@ class RootSwapPairContract {
             return await this.rootSwapPairContract.deploy({
                 constructorParams: this.constructorParams,
                 initParams: this.initParams,
-                initialBalance: freeton.utils.convertCrystal('30', 'nano'),
+                initialBalance: freeton.utils.convertCrystal('200', 'nano'),
                 _randomNonce: true,
                 keyPair: this.keyPair,
             });

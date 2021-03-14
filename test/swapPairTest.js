@@ -20,6 +20,7 @@ var swapConfig = require('../config/contracts/swapPairContractsConfig');
 const wallet = require('../config/contracts/walletParameters');
 const { root } = require('../config/contracts/swapPairContractsConfig');
 const { sleep } = require('../src/utils');
+const { default: BigNumber } = require('bignumber.js');
 
 const ton = new freeton.TonWrapper({
     giverConfig: giverConfig,
@@ -104,7 +105,7 @@ function initialSwapSetup(tonInstance, config, tokens) {
     config.root.keyPair = tonInstance.keys[0];
     config.root.initParams.ownerPubkey = '0x' + tonInstance.keys[0].public;
 
-    config.pair.keyPair = tonInstance.keys[1];
+    config.pair.keyPair = tonInstance.keys[0];
     config.pair.initParams.token1 = tokens[0].root.rootContract.address;
     config.pair.initParams.token2 = tokens[1].root.rootContract.address;
 
@@ -159,7 +160,7 @@ async function deployTIP3(tonInstance, tokenConfig, giverSC) {
 
     logger.log('Minting tokens to wallets');
     for (let contractId = 0; contractId < wallets.length; contractId++) {
-        await rootSC.mintTokensToWallet(wallets[contractId], tokenConfig.tokensAmount);
+        await rootSC.mintTokensToWallet(wallets[contractId], (tokenConfig.tokensAmount).toLocaleString('en').replace(/,/g, ''));
     }
 
     return {
@@ -184,6 +185,7 @@ describe('Test of swap pairs', async function() {
             for (let tokenId = 0; tokenId < pairsConfig.pairs.length; tokenId++)
                 tip3TokensConfig.push(initialTokenSetup(ton, pairsConfig.pairs[tokenId]));
         } catch (err) {
+            console.log(err);
             logger.error(JSON.stringify(err, null, '\t'));
             process.exit(1);
         }
@@ -205,20 +207,6 @@ describe('Test of swap pairs', async function() {
                 logger.log(`#${index+1}: ${tonStorages[index].tonStorageContract.address}`);
                 logger.log(`${tonStorages[index].keyPair.public}`);
                 logger.log(`${JSON.stringify(await tonStorages[index].tonStorageContract.runLocal('getPk', {}, {}))}`);
-                // let th = tonStorages[0];
-                // output = await th.sendTONTo(th.tonStorageContract.address, freeton.utils.convertCrystal('0.1', 'nano'));
-                // logger.log(JSON.stringify(output, null, '\t'));
-                // await sleep(10000);
-                // l = await th.tonStorageContract.run('t', {}, th.keyPair);
-                // logger.log(`${JSON.stringify(l.decoded.output, null, '\t')}`);
-                // output = await th.tonStorageContract.runLocal('getPkCell', {}, {});
-                // logger.log(`${JSON.stringify(output)}`);
-                // output = (await th.tonStorageContract.runLocal('tf', { tc: output }, {}));
-                // logger.log(`${JSON.stringify(output)}`);
-                // output = JSON.parse(JSON.stringify(output));
-                // output = await th.tonStorageContract.runLocal('stoiTest', { a: toHex(Buffer.from(output.data).toString()) }, {});
-                // logger.log(`${JSON.stringify(output)}`);
-                // process.exit(0);
             }
 
         } catch (err) {
@@ -237,6 +225,7 @@ describe('Test of swap pairs', async function() {
                 tip3Tokens.push(await deployTIP3(ton, tip3TokensConfig[tokenId], giverSC));
             }
         } catch (err) {
+            console.log(err);
             logger.error(JSON.stringify(err, null, '\t'));
             process.exit(1);
         }
@@ -285,7 +274,6 @@ describe('Test of swap pairs', async function() {
 
         try {
             let rootSwapPairInfo = await rootSwapContract.getServiceInformation();
-            // TODO: здесь должны быть нормальные проверки на полученную информацию
             logger.log(`Swap pair info: ${rootSwapPairInfo.rootContract}`);
         } catch (err) {
             logger.error(JSON.stringify(err, null, '\t'));
@@ -428,7 +416,7 @@ describe('Test of swap pairs', async function() {
                     logger.log(`transferring tokens from ${walletId+1} wallet`)
                     await tip3Tokens[tokenId].wallets[walletId].transferWithNotify(
                         swapPairContract.tokenWallets[tokenId],
-                        transferAmount[tokenId]
+                        (transferAmount[tokenId]).toLocaleString('en').replace(/,/g, '')
                     )
                 }
             }
@@ -452,7 +440,8 @@ describe('Test of swap pairs', async function() {
                 for (let walletId = 0; walletId < tip3Tokens[tokenId].wallets.length; walletId++) {
                     let wallet = tip3Tokens[tokenId].wallets[walletId];
                     let output = await swapPairContract.getUserBalance(wallet.keyPair);
-                    expect(Number(output[field])).equal(transferAmount[tokenId], 'Invalid balance');
+                    expect(Number(output[field]).toLocaleString('en').replace(/,/g, '')).
+                    equal((transferAmount[tokenId]).toLocaleString('en').replace(/,/g, ''), 'Invalid balance');
                 }
             }
 
@@ -477,8 +466,8 @@ describe('Test of swap pairs', async function() {
                 let output = await swapPairContract.getUserBalance(wallet.keyPair);
                 logger.log(`Wallet ${walletId+1} providing: ${output.tokenBalance1}, ${output.tokenBalance2}`);
                 await swapPairContract.provideLiquidity(
-                    output.tokenBalance1,
-                    output.tokenBalance2,
+                    Number(output.tokenBalance1).toLocaleString('en').replace(/,/g, ''),
+                    Number(output.tokenBalance2).toLocaleString('en').replace(/,/g, ''),
                     wallet.keyPair
                 );
                 totalLPTokens[0] += Number(output.tokenBalance1);
@@ -497,9 +486,11 @@ describe('Test of swap pairs', async function() {
 
         try {
             let output = await swapPairContract.getLPTokens();
-            logger.log(`Tokens in LPs: ${Number(output.token1LPAmount)}, ${Number(output.token2LPAmount)}`);
-            expect(Number(output.token1LPAmount)).equal(totalLPTokens[0]);
-            expect(Number(output.token2LPAmount)).equal(totalLPTokens[1]);
+            logger.log(`Tokens in LPs: ${Number(output.userLiquidityTokenBalance)}, ${Number(output.liquidityTokensMinted)}`);
+            expect(Number(output.lpToken1).toLocaleString('en').replace(/,/g, '')).
+            equal((totalLPTokens[0]).toLocaleString('en').replace(/,/g, ''));
+            expect(Number(output.lpToken2).toLocaleString('en').replace(/,/g, '')).
+            equal((totalLPTokens[1]).toLocaleString('en').replace(/,/g, ''));
             logger.success('LP tokens amount is equal to tokens added to pool');
         } catch (err) {
             console.log(err);
@@ -537,24 +528,25 @@ describe('Test of swap pairs', async function() {
                 let userVBalance = await swapPairContract.getUserBalance(wallet.keyPair);
                 logger.log(`User balance befor withdraw: ${userVBalance.tokenBalance1}, ${userVBalance.tokenBalance2}`);
                 let output = await swapPairContract.getUserLPBalance(wallet.keyPair);
-                let expectedBalance = {
-                    t1: Number(userVBalance.tokenBalance1) + Number(output.tokenBalance1),
-                    t2: Number(userVBalance.tokenBalance2) + Number(output.tokenBalance2)
-                };
+                console.log(JSON.stringify(output, null, '\t'));
 
                 let tokensWithdrawed = (await swapPairContract.withdrawLiquidity(
-                    Number(output.tokenBalance1),
-                    Number(output.tokenBalance2),
+                    Number(output.userLiquidityTokenBalance).toLocaleString('en').replace(/,/g, ''),
                     wallet.keyPair
                 )).decoded.output;
+                logger.log(JSON.stringify(tokensWithdrawed, null, '\t'));
+
                 logger.log(`Withdrawed: ${tokensWithdrawed.withdrawedFirstTokenAmount}, ${tokensWithdrawed.withdrawedSecondTokenAmount}`);
                 userVBalance = await swapPairContract.getUserBalance(wallet.keyPair);
                 logger.log(`User balance after withdraw: ${userVBalance.tokenBalance1}, ${userVBalance.tokenBalance2}`);
-                expect(userVBalance.tokenBalance1.toNumber()).equal(expectedBalance.t1);
-                expect(userVBalance.tokenBalance2.toNumber()).equal(expectedBalance.t2);
+                expect(userVBalance.tokenBalance1.toNumber().toLocaleString('en').replace(/,/g, '')).
+                equal(expectedBalance.t1.toLocaleString('en').replace(/,/g, ''));
+                expect(userVBalance.tokenBalance2.toNumber().toLocaleString('en').replace(/,/g, '')).
+                equal(expectedBalance.t2.toLocaleString('en').replace(/,/g, ''));
             }
 
             let output = await swapPairContract.getLPTokens();
+            logger.log(JSON.stringify(output, null, '\t'));
             expect(output.token1LPAmount.toNumber()).equal(0);
             expect(output.token2LPAmount.toNumber()).equal(0);
 
@@ -586,7 +578,7 @@ describe('Test of swap pairs', async function() {
                         output = await swapPairContract.withdrawTokens(
                             spi[rootTokenField],
                             wallet.walletContract.address,
-                            output[balanceField],
+                            output[balanceField].toLocaleString('en').replace(/,/g, ''),
                             wallet.keyPair
                         );
                         walletBalance = 0;

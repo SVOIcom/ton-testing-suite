@@ -16,7 +16,7 @@ class TonWrapper {
         this.giverConfig = giverConfig;
         this.debug = debug !== undefined;
         this.runAttempts = runAttempts === undefined ? 10 : runAttempts;
-        this.deployAttempts = deployAttempts === undefined ? 10 : deployAttempts;
+        this.deployAttempts = deployAttempts === undefined ? 20 : deployAttempts;
         this.config = config;
     }
 

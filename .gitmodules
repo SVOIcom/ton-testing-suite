@@ -1,0 +1,3 @@
+[submodule "tonswap-SC"]
+	path = tonswap-SC
+	url = https://github.com/SVOIcom/tonswap-SC

@@ -27,7 +27,7 @@ class TONStorage {
         return await this.tonStorageContract.deploy({
             constructorParams: {},
             initParams: {},
-            initialBalance: freeton.utils.convertCrystal('2', 'nano'),
+            initialBalance: freeton.utils.convertCrystal('600', 'nano'),
             _randomNonce: true,
             keyPair: this.keyPair
         })

@@ -132,11 +132,10 @@ class SwapPairContract {
      * @param {Number} amountT2 amount of second token to withdraw
      * @param {JSON} keyPair user's keypair
      */
-    async withdrawLiquidity(amountT1, amountT2, keyPair) {
+    async withdrawLiquidity(amountT1, keyPair) {
         return await this.swapPairContract.run(
             'withdrawLiquidity', {
-                minFirstTokenAmount: amountT1,
-                minSecondTokenAmount: amountT2
+                liquidityTokensAmount: amountT1
             },
             keyPair
         )
@@ -169,7 +168,9 @@ class SwapPairContract {
      */
     async getLPTokens() {
         return await this.swapPairContract.runLocal(
-            '_getLiquidityPoolTokens', {}, {}
+            'getUserLiquidityPoolBalance', {
+                pubkey: '0x' + this.keyPair.public
+            }, this.keyPair
         )
     }
 
