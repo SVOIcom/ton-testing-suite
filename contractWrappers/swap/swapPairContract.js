@@ -190,12 +190,12 @@ class SwapPairContract {
 
     /**
      * Simualte swap without contract's state changing
-     * @param {Number} swappableTokenRoot 
-     * @param {Number} swappableTokenAmount 
-     * @param {Number} fromLP 
-     * @param {Number} toLP 
-     * @param {Number} fromBalance 
-     * @param {Number} toBalance 
+     * @param {Number | String} swappableTokenRoot 
+     * @param {Number | String} swappableTokenAmount 
+     * @param {Number | String} fromLP 
+     * @param {Number | String} toLP 
+     * @param {Number | String} fromBalance 
+     * @param {Number | String} toBalance 
      * 
      * @returns {Promise<_DebugERInfo>} 
      */

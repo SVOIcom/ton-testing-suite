@@ -503,7 +503,8 @@ describe('Test of swap pairs', async function() {
         logger.log('#####################################');
         //TODO: token swap checks
         this.timeout(DEFAULT_TIMEOUT);
-        let d = await swapPairContract._simulateSwap();
+        let pairInfo = await swapPairContract.getPairInfo();
+        let d = await swapPairContract._simulateSwap(pairInfo.tokenRoot1, 10, 100, 500, 10, 0);
         logger.log(d);
         logger.log('Checking k is contstant');
         expext(d.oldK).equal(d.newK);
