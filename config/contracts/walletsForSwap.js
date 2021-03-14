@@ -15,48 +15,33 @@ function copyJSON(json) {
 
 let walletsDeployParameters = {
     pairs: [{
-            wallet: {
-                config: copyJSON(wallet),
-                keys: {},
-            },
-            root: {
-                config: copyJSON(rootParameters),
-                keys: {},
-            },
-            walletsAmount: 5,
-            tokensAmount: 888800000000000000000,
-            callbackAddress: '',
-        }, {
-            wallet: {
-                config: copyJSON(wallet),
-                keys: {},
-            },
-            root: {
-                config: copyJSON(rootParameters),
-                keys: {},
-            },
-            walletsAmount: 5,
-            tokensAmount: 888800000000000000000,
-            callbackAddress: '',
+        wallet: {
+            config: copyJSON(wallet),
+            keys: {},
         },
-        {
-            wallet: {
-                config: copyJSON(wallet),
-                keys: {},
-            },
-            root: {
-                config: copyJSON(rootParameters),
-                keys: {},
-            },
-            walletsAmount: 5,
-            tokensAmount: 888800000000000000000,
-            callbackAddress: '',
-        }
-    ]
+        root: {
+            config: copyJSON(rootParameters),
+            keys: {},
+        },
+        walletsAmount: 5,
+        tokensAmount: 888800000000000000000,
+        callbackAddress: '',
+    }, {
+        wallet: {
+            config: copyJSON(wallet),
+            keys: {},
+        },
+        root: {
+            config: copyJSON(rootParameters),
+            keys: {},
+        },
+        walletsAmount: 5,
+        tokensAmount: 888800000000000000000,
+        callbackAddress: '',
+    }]
 };
 
 walletsDeployParameters.pairs[0].root.config.initParams.name = toHex('NeSlavaCoin');
 walletsDeployParameters.pairs[1].root.config.initParams.name = toHex('DevTeamCoin');
-walletsDeployParameters.pairs[2].root.config.initParams.name = toHex('MyCoin');
 
 module.exports = walletsDeployParameters;
