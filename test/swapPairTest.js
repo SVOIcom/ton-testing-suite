@@ -28,7 +28,7 @@ const ton = new freeton.TonWrapper({
 });
 
 var rootSwapContract;
-var swapPairContract;
+var swapPairContract = new SwapPairContract(ton, swapConfig.pair, swapConfig.pair.keyPair);
 var tonStorages = [];
 var tip3Tokens = [];
 var tip3TokensConfig = [];
@@ -253,7 +253,7 @@ describe('Test of swap pairs', async function() {
         this.timeout(DEFAULT_TIMEOUT * 2);
         try {
             logger.log('Loading swap pair contract');
-            swapPairContract = new SwapPairContract(ton, swapConfig.pair, swapConfig.pair.keyPair);
+            // swapPairContract = new SwapPairContract(ton, swapConfig.pair, swapConfig.pair.keyPair);
             await swapPairContract.loadContract();
 
             logger.log('Loading root swap pair contract');
@@ -511,9 +511,22 @@ describe('Test of swap pairs', async function() {
     it('Swap tokens', async function() {
         logger.log('#####################################');
         //TODO: token swap checks
-    })
+        this.timeout(DEFAULT_TIMEOUT);
+        let d = await swapPairContract._simulateSwap();
+        logger.log(d);
+        logger.log('Checking k is contstant');
+        expext(d.oldK).equal(d.newK);
 
-    it('Remove liquidity', async function() {
+        logger.log('Checking pools');
+        expect(d.newFromPool).equal(d.oldFromPool - d.swappableTokenAmount + d.fee);
+        expect(d.newToPool).equal(d.oldToPool + d.targetTokenAmount);
+
+        logger.lof('Checking user balances');
+        expect(d.newUserFromBalance).equal(d.oldUserFromBalance - d.swappableTokenAmount);
+        expect(d.newUserToBalance).equal(d.oldUserToBalance + d.targetTokenAmount);
+    });
+
+    it('Withdraw liquidity', async function() {
         logger.log('#####################################');
         this.timeout(DEFAULT_TIMEOUT * 5);
 
