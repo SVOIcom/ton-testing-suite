@@ -23,7 +23,7 @@ let walletsDeployParameters = {
             config: copyJSON(rootParameters),
             keys: {},
         },
-        walletsAmount: 5,
+        walletsAmount: 2,
         tokensAmount: 888800000000000000000,
         callbackAddress: '',
     }, {
@@ -35,7 +35,7 @@ let walletsDeployParameters = {
             config: copyJSON(rootParameters),
             keys: {},
         },
-        walletsAmount: 5,
+        walletsAmount: 2,
         tokensAmount: 888800000000000000000,
         callbackAddress: '',
     }]

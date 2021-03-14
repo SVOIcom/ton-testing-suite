@@ -185,58 +185,8 @@ class SwapPairContract {
                 swapToken1: token1Swap,
                 swapToken2: token2Swap
             }, {}
-        );
-    }
-
-    /**
-     * Simualte swap without contract's state changing
-     * @param {Number | String} swappableTokenRoot 
-     * @param {Number | String} swappableTokenAmount 
-     * @param {Number | String} fromLP 
-     * @param {Number | String} toLP 
-     * @param {Number | String} fromBalance 
-     * @param {Number | String} toBalance 
-     * 
-     * @returns {Promise<_DebugERInfo>} 
-     */
-    async _simulateSwap(swappableTokenRoot, swappableTokenAmount, fromLP, toLP, fromBalance, toBalance) {
-        let res = await this.swapPairContract.runLocal(
-            '_simulateSwap', 
-            {
-                swappableTokenRoot: swappableTokenRoot,
-                swappableTokenAmount: swappableTokenAmount,
-                fromLP: fromLP,
-                toLP: toLP,
-                fromBalance: fromBalance,
-                toBalance: toBalance
-            }, 
-            {}
-        );
-        for (let n in res)
-            res[n] = Number(res[n]);
-        
-        return res;
+        )
     }
 }
 
 module.exports = SwapPairContract;
-
-
-
-/**
-* @typedef {Object} _DebugERInfo
-
-* @property {Number} oldK
-* @property {Number} newK
-* @property {Number} swappableTokenAmount
-* @property {Number} targetTokenAmount
-* @property {Number} fee
-* @property {Number} oldFromPool
-* @property {Number} oldToPool
-* @property {Number} newFromPool
-* @property {Number} newToPool
-* @property {Number} oldUserFromBalance;
-* @property {Number} oldUserToBalance;
-* @property {Number} newUserFromBalance;
-* @property {Number} newUserToBalance;
-*/
