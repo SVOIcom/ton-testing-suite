@@ -86,8 +86,8 @@ TIP-3 token wallets:
     2. 0:5306be47c46aa1012fbdc2126e1033b61cfa5747352d10539e0059d3f3418fdb
     3. 0:baa3137966a0fc4ba75fd7e10528620ceef20b9c2a3edb01037c6f9cad42adc1
 
-# Debot
+# Debots
 
-Debot address in devnet:
-v 0.1.0: 0:c38e272ff7fd288c0a72c5fc01205e87913ab0c5a17744dc277f88e152862ceb
+Debot addresses in devnet: \
+v 0.1.0: 0:c38e272ff7fd288c0a72c5fc01205e87913ab0c5a17744dc277f88e152862ceb \
 v 0.2.0 (20-03-2021 upd): 0:6cd3dd396cbdbac5df20372b8f4727c7a15938950c90349c93313cd818c90ed4
